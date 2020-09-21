@@ -2,7 +2,7 @@
 
 ## 游戏分类
 
-![](./images/游戏.png)
+<img src="./images/游戏.png" height=50% width=50%>
 
 ## 游戏市场的热点
 
