@@ -104,6 +104,8 @@ public class Script : MonoBehaviour
 
 #### 用UML图描述三者的关系
 
+![](./images/UML.png)
+
 ### 资源预设与对象克隆
 
 * 预设的好处：
@@ -113,6 +115,26 @@ public class Script : MonoBehaviour
 * 预设与对象克隆的关系：预设修改的复杂度降低，一旦需要修改所有相同属性的对象，只需要修改预设即可，所有通过预设实例化的对象都会做出相应变化。而克隆只是复制一个一模一样的对象，这个对象独立于原来的对象，在修改的过程中不会影响原有的对象，这样不方便整体改动。
 * 制作 table 预制，写一段代码将 table 预制资源实例化成游戏对象
 
+table预制：
+![](./images/prefade.png)
+
+将预制资源实例化的代码：
+```
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PrefadesInstantiate : MonoBehaviour
+{
+    public Transform table;
+
+    void Start() 
+    {
+        Instantiate(table, new Vector3(5, 0, 5), Quaternion.identity);
+    }
+}
+
+```
 
 
 ## 计算器代码
