@@ -17,6 +17,29 @@
 
 游戏对象树层次视图包含了每一个当前场景的所有游戏对象。其中一些是资源文件的实例，如3D模型和其他预制物体的实例。可以在层次结构视图中选择对象或者生成对象。当在场景中增加或者删除对象，层次结构视图中相应的对象则会出现或消失。想让一个游戏对象成为另一个的子对象，只需在层次视图中把它拖到另一个上即可。一个子对象将继承其父对象的移动和旋转属性
 
+在Unity Hub的学习项目里面选择一个Creator Kit项目下载：
+![](./images/project.png)
+
+可以看到该项目的资源包括：
+* Art
+* Audio
+* Prefabs
+* ProBuilder Data
+* Scenes
+* Scrips
+* Terrain
+
+游戏对象包括：
+* Character
+* Main Camera
+* Directional Light
+* Spawner
+* GameplayVCAM
+* EventSystem
+* Managers
+* LevelDesign
+* GlobalPostProcessing
+
 ### 编写一个代码，使用debug语句来验证MonoBehaviour基本行为或事件触发的条件
 
 * 基本行为包括`Awake()`,`Start()`,`Update()`,`FixedUpdate()` ,`LateUpdate()`
@@ -138,6 +161,14 @@ public class PrefadesInstantiate : MonoBehaviour
 
 
 ## 计算器代码
+
+将以下代码直接拖进`Main Camera`就可以了，实现的只是一个简单的计算器：
+* 不支持错误输入的检测
+* 不支持浮点数计算
+* 只支持加减乘除、复位、后退的功能
+
+GUI界面：
+![](./images/caculator.png)
 
 ```
 using System;
