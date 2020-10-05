@@ -162,6 +162,8 @@ public class PrefadesInstantiate : MonoBehaviour
 
 ## 计算器代码
 
+[github仓库](https://github.com/Hide-on-bush2/Unity-Caculator)  
+
 将以下代码直接拖进`Main Camera`就可以了，实现的只是一个简单的计算器：
 * 不支持错误输入的检测
 * 不支持浮点数计算
