@@ -97,6 +97,8 @@ public class Move3 : MonoBehaviour
 
 ### 实现一个完整的太阳系
 
+[项目地址](https://github.com/Hide-on-bush2/Unity-SolarSystem)
+
 **要求**：
 * 其他星球围绕太阳的转速必须不一样
 * 不在一个法平面上
@@ -201,6 +203,8 @@ $$
 ![](./images/solar.gif)
 
 ## 编程实践：实现游戏《牧师与魔鬼》
+
+[项目地址](https://github.com/Hide-on-bush2/Unity-PriestsAndDevils)
 
 首先在unity商店上下载几个人物模型：
 
