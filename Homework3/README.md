@@ -404,4 +404,286 @@ public interface IUserAction
 * 管理本场次的规则（裁判）
 * 各种杂务
 
-由于
+由于这次游戏只有一个场景，因此我们主要需要完成`FirstController`场记的实现
+
+用栈来实现游戏对象的管理：
+```
+private Stack<GameObject> PriestStackA = new Stack<GameObject>();
+    private Stack<GameObject> DevilsStackA = new Stack<GameObject>();
+
+    private Stack<GameObject> PriestStackB = new Stack<GameObject>();
+    private Stack<GameObject> DevilsStackB = new Stack<GameObject>();
+
+    private Stack<GameObject> PriestStackBoat = new Stack<GameObject>();
+    private Stack<GameObject> DevilsStackBoat = new Stack<GameObject>();
+```
+然后需要定义一系列的`private`变量，相当于全局变量的作用：
+```
+    private int boarding_num;
+    private GameObject boat;
+    private GameObject river;
+
+    private const int A = 1;
+    private const int B = 2;
+    private const int WIN = 3;
+    private const int UNDEFINE = 4;
+
+    private int curr_boat;
+
+    private int status;
+
+    private string textFieldString = "Game has started";
+```
+
+然后实现`Awake()`函数，主要是初始化全局变量：
+```
+    void Awake()
+    {
+        SSDirector director = SSDirector.getInstance();
+        director.setFPS(60);
+        director.currentSceneController = this;
+        director.currentSceneController.LoadResources();
+        boarding_num = 0;
+        curr_boat = A;
+        status = UNDEFINE;
+    }
+```
+实现`LoadResources()`函数，实现游戏资源的加载，这里主要是将预制加载到游戏中并将其放入到对应的栈中：
+```
+    public void LoadResources()
+    {
+        river = Instantiate<GameObject>(
+            Resources.Load<GameObject>("prefabs/river"),
+            Vector3.zero, Quaternion.identity);
+        river.name = "river";
+        river.transform.localScale = new Vector3(3f, 1f, 2f);
+        river.transform.position = new Vector3(-7, 0, 0);
+
+        Debug.Log("load river ...  \n");
+
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject priest = Instantiate<GameObject>(
+                Resources.Load<GameObject>("prefabs/priest"),
+                new Vector3(10, 0, (float)(i * 1.2 + 2.5)), Quaternion.identity);
+            priest.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            priest.transform.LookAt(Vector3.zero);
+            priest.name = "priest" + i;
+            PriestStackA.Push(priest);
+            Debug.Log("load priest " + i + " ...\n");
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject devil = Instantiate<GameObject>(
+                Resources.Load<GameObject>("prefabs/devil"),
+                new Vector3(10, 0, (float)(i * 1.5 - 3)), Quaternion.identity);
+            devil.transform.localScale = new Vector3(2f, 2f, 2f);
+            devil.transform.LookAt(Vector3.zero);
+            devil.name = "devil" + i;
+            DevilsStackA.Push(devil);
+            Debug.Log("load devil " + i + " ...\n");
+        }
+
+        boat = Instantiate<GameObject>(
+            Resources.Load<GameObject>("prefabs/fishing_boat"),
+            new Vector3(4, 0, 0), Quaternion.identity);
+        boat.transform.localScale = new Vector3(5f, 5f, 5f);
+        boat.transform.LookAt(new Vector3(4, 0, 10));
+        boat.name = "boat";
+        Debug.Log("Load boat...\n");
+    }
+```
+然后实现`Reset()`函数，这是一个接口，当用户点击按钮的时候会触发这个事件，然后会将所有的游戏对象和全局变量恢复到游戏开始的时候：
+```
+    public void Reset()
+    {
+        //revover priest 
+        while(PriestStackBoat.Count != 0)
+        {
+            GameObject priest = PriestStackBoat.Pop();
+            priest.transform.position = new Vector3(10, 0, (float)((PriestStackA.Count) * 1.2 + 2.5));
+            PriestStackA.Push(priest);
+        }
+
+        while(PriestStackB.Count != 0)
+        {
+            GameObject priest = PriestStackB.Pop();
+            priest.transform.position = new Vector3(10, 0, (float)((PriestStackA.Count) * 1.2 + 2.5));
+            PriestStackA.Push(priest);
+        }
+
+        //recover devils
+        while (DevilsStackBoat.Count != 0)
+        {
+            GameObject devils = DevilsStackBoat.Pop();
+            devils.transform.position = new Vector3(10, 0, (float)(DevilsStackA.Count * 1.5 - 3));
+            DevilsStackA.Push(devils);
+        }
+
+        while (DevilsStackB.Count != 0)
+        {
+            GameObject devils = DevilsStackB.Pop();
+            devils.transform.position = new Vector3(10, 0, (float)(DevilsStackA.Count * 1.5 - 3));
+            DevilsStackA.Push(devils);
+        }
+
+        boat.transform.position = new Vector3(4, 0, 0);
+
+        boarding_num = 0;
+        curr_boat = A;
+        textFieldString = "";
+        status = UNDEFINE;
+        Debug.Log("Reset\n");
+    }
+```
+然后实现牧师上船、魔鬼上船、牧师上岸和魔鬼上岸四个基本事件函数
+
+牧师上船：
+```
+    public void PriestBoarding()
+    {
+        Stack<GameObject> PriestStack = curr_boat == A ? PriestStackA : PriestStackB;
+        if(boarding_num < 2 && PriestStack.Count != 0)
+        {
+            GameObject priest = PriestStack.Pop();
+            if(boarding_num == 0)
+            {
+                priest.transform.position = boat.transform.position + (new Vector3(-2, 0, 0));
+            }
+            else
+            {
+                //priest.transform.position = boat.transform.position;
+                if(PriestStackBoat.Count != 0)
+                {
+                    priest.transform.position = PriestStackBoat.Peek().transform.position == boat.transform.position ? boat.transform.position + (new Vector3(-2, 0, 0)) : boat.transform.position;
+                }
+                else
+                {
+                    priest.transform.position = DevilsStackBoat.Peek().transform.position == boat.transform.position ? boat.transform.position + (new Vector3(-2, 0, 0)) : boat.transform.position;
+                }
+            }
+            PriestStackBoat.Push(priest);
+            boarding_num += 1;
+            Debug.Log("Priest boarding\n");
+        }
+        
+    }
+```
+
+魔鬼上船：
+```
+    public void DevilBoarding()
+    {
+        Stack<GameObject> DevilsStack = curr_boat == A ? DevilsStackA : DevilsStackB;
+        if (boarding_num < 2 && DevilsStack.Count != 0)
+        {
+            GameObject devil = DevilsStack.Pop();
+            if (boarding_num == 0)
+            {
+                devil.transform.position = boat.transform.position + (new Vector3(-2, 0, 0));
+            }
+            else
+            {
+                //devil.transform.position = boat.transform.position;
+                if (PriestStackBoat.Count != 0)
+                {
+                    devil.transform.position = PriestStackBoat.Peek().transform.position == boat.transform.position ? boat.transform.position + (new Vector3(-2, 0, 0)) : boat.transform.position;
+                }
+                else
+                {
+                    devil.transform.position = DevilsStackBoat.Peek().transform.position == boat.transform.position ? boat.transform.position + (new Vector3(-2, 0, 0)) : boat.transform.position;
+                }
+            }
+            DevilsStackBoat.Push(devil);
+            boarding_num += 1;
+            Debug.Log("Devil boarding\n");
+
+        }
+    }
+```
+
+牧师上岸：
+```
+    public void PriestGoAshore()
+    {
+        Stack<GameObject> PriestStack = curr_boat == A ? PriestStackA : PriestStackB;
+        if(boarding_num > 0 && PriestStackBoat.Count != 0)
+        {
+            GameObject priest = PriestStackBoat.Pop();
+            priest.transform.position = curr_boat == A ? new Vector3(10, 0, (float)((PriestStack.Count) * 1.2 + 2.5)) : new Vector3(-23, 0, (float)((PriestStack.Count) * 1.2 + 2.5));
+            PriestStack.Push(priest);
+            boarding_num--;
+            Debug.Log("Priest go ashore\n");
+        }
+    }
+```
+魔鬼上岸：
+```
+    public void DevilGoAshore()
+    {
+        Stack<GameObject> DevilsStack = curr_boat == A ? DevilsStackA : DevilsStackB;
+        if (boarding_num > 0 && DevilsStackBoat.Count != 0)
+        {
+            GameObject devil = DevilsStackBoat.Pop();
+            devil.transform.position = curr_boat == A ? new Vector3(10, 0, (float)(DevilsStack.Count * 1.5 - 3)) : new Vector3(-23, 0, (float)(DevilsStack.Count * 1.5 - 3));
+            DevilsStack.Push(devil);
+            boarding_num--;
+            Debug.Log("Devil go ashore\n");
+        }
+    }
+```
+
+然后还有一个开船函数：
+```
+    public void BoatGo()
+    {
+        
+        if(boarding_num >= 1)
+        {
+            Vector3 direction = curr_boat == A ? new Vector3(-23, 0, 0) : new Vector3(23, 0, 0);
+            boat.transform.position += direction;
+            List<GameObject> tmp = new List<GameObject>();
+            while(PriestStackBoat.Count != 0)
+            {
+                tmp.Add(PriestStackBoat.Pop());
+            }
+            for (int i = 0; i < tmp.Count; i++)
+            {
+                tmp[i].transform.position += direction;
+                PriestStackBoat.Push(tmp[i]);
+            }
+
+            tmp.Clear();
+            while (DevilsStackBoat.Count != 0)
+            {
+                tmp.Add(DevilsStackBoat.Pop());
+            }
+            for (int i = 0; i < tmp.Count; i++)
+            {
+                tmp[i].transform.position += direction;
+                DevilsStackBoat.Push(tmp[i]);
+            }
+
+            curr_boat = curr_boat == A ? B : A;
+            if (!IsSafe())
+            {
+                Debug.Log("Some Priests killed by Devils\n");
+                textFieldString = "Some Priests killed by Devils";
+                GameOver();
+            }
+
+            /*if(PriestStackB.Count == 3 && DevilsStackB.Count == 3)
+            {
+                Debug.Log("You win\n");
+                textFieldString = "You win";
+                GameOver();
+            }*/
+        }
+    }
+```
+
+游戏运行效果大致如下：
+![](./images/11.png)
+
+相关演示视频已放到B站审核
