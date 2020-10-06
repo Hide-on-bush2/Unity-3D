@@ -690,4 +690,4 @@ private Stack<GameObject> PriestStackA = new Stack<GameObject>();
 游戏运行效果大致如下：
 ![](./images/11.png)
 
-相关演示视频已放到B站审核
+[相关演示视频](https://www.bilibili.com/video/BV1gz4y1f7Ew/)已放到B站
