@@ -774,6 +774,9 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction
 
 ```
 
+## 演示视频
+
+[bilibili](https://www.bilibili.com/video/BV1wa4y1s7Ah/)
 
 
 
