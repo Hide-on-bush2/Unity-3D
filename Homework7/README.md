@@ -27,7 +27,7 @@
 
 ## 游戏效果展示
 
-## 2D地图和Sprite预制件制作
+![](./images/game.gif)
 
 ## 脚本编写
 
@@ -547,4 +547,9 @@ public class PatrolData : MonoBehaviour
 
 到这里设计就完成啦，具体实现细节请看源码
 
-## 
+## 项目地址
+
+将本目录的Assets文件夹替换您自己的文件夹便可以了
+
+## 演示视频
+
