@@ -70,33 +70,33 @@ curValue = Mathf.Lerp(curValue, step, 0.05f);
 
 实现效果为：
 
-<img src="./images/imgui.gif" width=80%>
+<img src="./images/imgui.gif" width=50%>
 
 ## UGUI实现
 
 我们首先选取unity standard assest中的第三人称角色作为我们的人物预制：
 
-<img src="./images/1.png" width=80%>
+<img src="./images/1.png" width=50%>
 
 然后在人物预制中创建一个Canvas，并在Canvas下面创建两个Button组件`addButton`和`minusButton`，和一个Slider，现在的预制结构如下：
 
-<img src="./images/2.png" width=80%>
+<img src="./images/2.png" width=50%>
 
 然后将Canvas的的Render Mode设置为World Space，并调整它的大小、宽度和位置，如下图所示：
 
-<img src="./images/3.png" width=80%>
+<img src="./images/3.png" width=50%>
 
 然后我们再设置血条的颜色为红色，还有它的长度和宽度，在slider里面：
 
-<img src="./images/4.png" width=80%>
+<img src="./images/4.png" width=50%>
 
 设置填充区域的位置：
 
-<img src="./images/5.png" width=80%>
+<img src="./images/5.png" width=50%>
 
 设置填充的颜色：
 
-<img src="./images/6.png" width=80%>
+<img src="./images/6.png" width=50%>
 
 然后编写以下脚本，设置按钮的功能和让血条一直对着摄像头：
 
@@ -148,7 +148,7 @@ public class bloodBar_GUI : MonoBehaviour {
 
 实现效果如下：
 
-<img src="./images/ggui.gif" width=80%>
+<img src="./images/ggui.gif" width=50%>
 
 ## 两种实现的优缺点
 
@@ -179,8 +179,8 @@ public class bloodBar_GUI : MonoBehaviour {
 * UGUI实现的血条
   * 直接将prefabs文件夹中的`ThirdPersonController`拖到场景里就行
 
-<img src="./images/7.png" width=80%>
+<img src="./images/7.png" width=50%>
 
 或者直接将`NewScreen`拖进场景中：
 
-<img src="./images/8.png" width=80%>
+<img src="./images/8.png" width=50%>
